@@ -98,3 +98,50 @@ h1,h2,h3,h4,h5,h6 { font-family: "Bungee", sans-serif; }
 
 /* ===== Empty state ===== */
 .empty-state-icon { animation: floatGentle 4s ease-in-out infinite; }
+
+/* ===== Typography, Scaling & High Contrast Professional System ===== */
+.dark-surface {
+  background: #090d16 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark-card {
+  background: linear-gradient(160deg, rgba(99, 102, 241, 0.12), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(.16,1,.3,1);
+}
+
+.dark-card:hover {
+  border-color: rgba(165, 180, 252, 0.45);
+  box-shadow: 0 12px 48px rgba(99, 102, 241, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Typography Overrides for Readability */
+.font-mono {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 500 !important; /* Bold up all monospace codes */
+}
+
+.text-white\/40, .text-slate-400 {
+  color: #94a3b8 !important; /* Deep contrast slate text */
+}
+
+.text-white\/30 {
+  color: #64748b !important;
+}
+
+.text-violet-300 {
+  color: #c7d2fe !important; /* Bright crisp violet */
+}
+
+.text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+/* Global App Container Reset to Screen Edges */
+.max-w-7xl {
+  max-w: 100% !important;
+}
