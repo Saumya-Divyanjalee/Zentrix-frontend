@@ -13,6 +13,17 @@ h1,h2,h3,h4,h5,h6 { font-family: "Bungee", sans-serif; }
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 @keyframes shimmer { 0% { background-position:-200% 0; } 100% { background-position:200% 0; } }
+@keyframes popIn { 0% { opacity:0; transform:scale(0.4); } 60% { opacity:1; transform:scale(1.12); } 100% { opacity:1; transform:scale(1); } }
+@keyframes riseUp { from { opacity:0; transform:translateY(40px) scale(0.92); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes ringFade { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
+@keyframes trophyLift { 0% { opacity:0; transform:translateY(14px) scale(0.6); } 70% { transform:translateY(-3px) scale(1.06); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes confettiBurst { 0% { opacity:0; transform:translate(0,0) rotate(0deg) scale(0.3); } 40% { opacity:1; } 100% { opacity:0; transform:translate(var(--cx,12px),var(--cy,-24px)) rotate(var(--cr,180deg)) scale(1); } }
+@keyframes floatGentle { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+@keyframes countUp { from { opacity:0; } to { opacity:1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
 
 .animate-slide-up { animation: slideUp 0.4s cubic-bezier(.16,1,.3,1); }
 .animate-fade-in { animation: fadeIn 0.3s ease; }

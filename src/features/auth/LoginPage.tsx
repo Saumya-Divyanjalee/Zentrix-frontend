@@ -35,7 +35,7 @@ export default function LoginPage() {
             <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
               <GraduationCap size={20} color="white" />
             </div>
-            <h1 className="font-bungee text-white text-lg">StudyFlow AI</h1>
+            <h1 className="font-bungee text-white text-lg">Zentrix</h1>
           </div>
           <div className="mb-10">
             <h2 className="font-bungee text-4xl text-white leading-tight mb-4">
@@ -59,7 +59,7 @@ export default function LoginPage() {
         </div>
         <div className="relative z-10">
           <div className="divider mb-4 opacity-20"/>
-          <p className="font-mono text-white/40 text-xs">© 2026 StudyFlow AI — Premium Edition</p>
+          <p className="font-mono text-white/40 text-xs">© 2026 Zentrix — Premium Edition</p>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ export default function LoginPage() {
             <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{background:'linear-gradient(135deg,#6366f1,#8b5cf6)'}}>
               <GraduationCap size={16} color="white"/>
             </div>
-            <h1 className="font-bungee text-zinc-900">StudyFlow AI</h1>
+            <h1 className="font-bungee text-zinc-900">Zentrix</h1>
           </div>
 
           <h2 className="text-2xl font-bungee text-zinc-900 mb-1">Welcome back</h2>

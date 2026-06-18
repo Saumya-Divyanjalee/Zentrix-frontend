@@ -43,7 +43,7 @@ export default function RegisterPage() {
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style={{background:'linear-gradient(135deg,#6366f1,#8b5cf6)'}}>
                 <GraduationCap size={22} color="white"/>
               </div>
-              <h2 className="font-bungee text-xl text-zinc-900 mb-2">Join StudyFlow AI</h2>
+              <h2 className="font-bungee text-xl text-zinc-900 mb-2">Join Zentrix</h2>
               <p className="font-mono text-xs text-zinc-500 mb-8 leading-relaxed">Premium tools to accelerate your academic journey.</p>
               <div className="space-y-3">
                 {perks.map((p,i) => (

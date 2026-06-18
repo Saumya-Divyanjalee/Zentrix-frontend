@@ -32,8 +32,8 @@ export default function Sidebar() {
             <GraduationCap size={18} color="white" strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="font-bungee text-sm text-zinc-900 leading-none">StudyFlow</h1>
-            <p className="font-mono text-[10px] text-zinc-400 mt-0.5 tracking-wider">AI PLATFORM</p>
+<h1 className="font-bungee text-sm text-zinc-900 leading-none">Zentrix</h1>            
+<p className="font-mono text-[10px] text-zinc-400 mt-0.5 tracking-wider">AI PLATFORM</p>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, LogOut, Shield } from 'lucide-react';
+import { User, Mail, Lock, LogOut, Shield, Camera } from 'lucide-react';
 import { RootState, AppDispatch } from '../../app/store';
 import { logout } from '../auth/authSlice';
 import api from '../../api/axiosInstance';
@@ -17,6 +17,9 @@ export default function ProfilePage() {
   const [nameErr, setNameErr] = useState('');
   const [pwErr, setPwErr] = useState('');
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   const updateName = async(e:React.FormEvent) => {
     e.preventDefault(); setNameErr(''); setNameMsg('');
     try { await api.put('/auth/profile',{name}); setNameMsg('Name updated successfully!'); }
@@ -31,6 +34,26 @@ export default function ProfilePage() {
     catch { setPwErr('Failed to update password'); }
   };
 
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      await api.post('/auth/upload-avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      window.location.reload(); // simplest way to refresh avatar across app
+    } catch (error) {
+      console.error('Upload failed', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-slide-up max-w-xl">
       <div>
@@ -40,8 +63,20 @@ export default function ProfilePage() {
 
       {/* Avatar card */}
       <div className="luxury-card p-6 flex items-center gap-5">
-        <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white flex-shrink-0" style={{background:'linear-gradient(135deg,#6366f1,#8b5cf6)'}}>
-          {user?.name?.charAt(0).toUpperCase()||'U'}
+        <div onClick={() => fileInputRef.current?.click()}
+          className="relative w-16 h-16 rounded-2xl cursor-pointer group flex-shrink-0">
+          {user?.avatar ? (
+            <img src={user.avatar} className="w-16 h-16 rounded-2xl object-cover" />
+          ) : (
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white"
+              style={{background:'linear-gradient(135deg,#6366f1,#8b5cf6)'}}>
+              {user?.name?.charAt(0).toUpperCase()||'U'}
+            </div>
+          )}
+          <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <Camera size={18} color="white" />
+          </div>
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
         </div>
         <div>
           <h2 className="font-bungee text-lg text-zinc-900">{user?.name}</h2>
