@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import api from '../../api/axiosInstance';
 import { Task } from '../../types';
 
@@ -24,14 +24,27 @@ export default function CalendarPage() {
   const tasksForDay = (d: number) => tasks.filter(t => t.deadline?.startsWith(dateStr(d)));
   const selectedTasks = selected ? tasks.filter(t => t.deadline?.startsWith(selected)) : [];
 
+  const monthTasks = tasks.filter(t => {
+    if (!t.deadline) return false;
+    const d = new Date(t.deadline);
+    return d.getMonth() === m && d.getFullYear() === y;
+  });
+
   return (
     <div className="space-y-6 animate-slide-up">
-      <div>
-        <h1 className="font-bungee text-3xl text-zinc-900">Calendar</h1>
-        <p className="font-mono text-xs text-zinc-400 mt-1 tracking-wide">DEADLINE VIEW</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-bungee text-3xl text-zinc-900">Calendar</h1>
+          <p className="font-mono text-xs text-zinc-400 mt-1 tracking-wide">DEADLINE VIEW</p>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-50 border border-primary-100">
+          <CalendarDays size={12} className="text-primary-500"/>
+          <span className="font-mono text-[11px] text-primary-600 font-bold">{monthTasks.length} this month</span>
+        </div>
       </div>
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 luxury-card p-6">
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="col-span-1 lg:col-span-2 luxury-card p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-bungee text-lg text-zinc-900">{MONTHS[m]} {y}</h2>
             <div className="flex gap-2">
@@ -48,7 +61,7 @@ export default function CalendarPage() {
               <div key={d} className="text-center font-mono text-[10px] font-bold text-zinc-400 py-2 tracking-wider">{d}</div>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-1 animate-fade-in" key={`${y}-${m}`}>
             {[...Array(firstDay)].map((_, i) => <div key={`e${i}`}/>)}
             {[...Array(daysInMonth)].map((_, i) => {
               const d = i + 1;
@@ -56,11 +69,14 @@ export default function CalendarPage() {
               const dt_tasks = tasksForDay(d);
               const isSel = selected === dt;
               const isTd = isToday(d);
+              const hasDeadline = dt_tasks.length > 0;
               return (
                 <div key={d} onClick={() => setSelected(isSel ? null : dt)}
-                  className={`min-h-14 p-1.5 rounded-xl cursor-pointer transition-all ${
-                    isSel ? 'bg-primary-600' : isTd ? 'bg-primary-50 border border-primary-200' : 'hover:bg-zinc-50'
-                  }`}>
+                  className={`min-h-14 p-1.5 rounded-xl cursor-pointer transition-all relative ${
+                    isSel ? 'bg-primary-600' : isTd ? 'border-2 border-primary-400' : hasDeadline ? 'hover:bg-amber-50' : 'hover:bg-zinc-50'
+                  }`}
+                  style={!isSel && !isTd && hasDeadline ? {background:'linear-gradient(160deg,rgba(251,191,36,0.06),transparent)'} : undefined}>
+                  {isTd && !isSel && <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary-500 spark-dot"/>}
                   <p className={`font-mono text-xs font-bold mb-1 ${isSel ? 'text-white' : isTd ? 'text-primary-600' : 'text-zinc-700'}`}>{d}</p>
                   {dt_tasks.slice(0, 2).map(t => (
                     <div key={t._id} className={`font-mono text-[9px] px-1 py-0.5 rounded mb-0.5 truncate ${
@@ -78,15 +94,16 @@ export default function CalendarPage() {
             })}
           </div>
         </div>
+
         <div className="luxury-card p-5">
           <h3 className="font-bungee text-sm text-zinc-900 mb-1">
             {selected ? new Date(selected + 'T00:00:00').toLocaleDateString('en-US', {month:'long',day:'numeric'}) : 'Select a Date'}
           </h3>
           <p className="font-mono text-[10px] text-zinc-400 mb-4 tracking-wider">SCHEDULED TASKS</p>
           {!selected ? (
-            <p className="font-mono text-xs text-zinc-300">Click any date to see tasks</p>
+            <p className="font-mono text-xs text-zinc-300">Click any date to see what's due</p>
           ) : selectedTasks.length === 0 ? (
-            <p className="font-mono text-xs text-zinc-300">No tasks due this day</p>
+            <p className="font-mono text-xs text-zinc-300">Nothing due this day — breathe easy</p>
           ) : (
             <div className="space-y-2">
               {selectedTasks.map(t => (
@@ -102,11 +119,9 @@ export default function CalendarPage() {
           )}
           <div className="mt-5 pt-4 border-t border-zinc-100">
             <p className="font-mono text-[10px] font-bold text-zinc-400 mb-3 tracking-wider uppercase">This Month</p>
-            {tasks.filter(t => {
-              if (!t.deadline) return false;
-              const d = new Date(t.deadline);
-              return d.getMonth() === m && d.getFullYear() === y;
-            }).slice(0, 6).map(t => (
+            {monthTasks.length === 0 ? (
+              <p className="font-mono text-xs text-zinc-300">Nothing scheduled yet</p>
+            ) : monthTasks.slice(0, 6).map(t => (
               <div key={t._id} className="flex items-center gap-2 py-1.5">
                 <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${t.priority==='high'?'bg-red-400':t.priority==='medium'?'bg-amber-400':'bg-emerald-400'}`}/>
                 <p className="font-mono text-[10px] text-zinc-600 truncate flex-1">{t.title}</p>
