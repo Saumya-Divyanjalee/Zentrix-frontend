@@ -41,6 +41,11 @@ export default function DashboardPage() {
 
   const pct = stats?.productivity ?? 0;
 
+  // Calculate real-time completion rate safely for the MomentumRing component
+  const calculatedCompletionRate = stats?.totalTasks && stats.totalTasks > 0 
+    ? (stats.completedTasks / stats.totalTasks) * 100 
+    : 0;
+
   if (loading) return (
     <div className="dark-surface -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 min-h-[80vh]">
       <div className="loading-bar w-full mb-8"/>
@@ -58,8 +63,9 @@ export default function DashboardPage() {
       <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full opacity-10 blur-3xl ambient-blob" style={{background:'#fbbf24', animationDelay:'4s'}}/>
 
       <div className="relative z-10 space-y-7">
+        {/* Top Hero Banner */}
         <div className="dark-card p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 card-rise">
-          <MomentumRing percent={pct} size={92} strokeWidth={7} dark />
+          <MomentumRing percentage={calculatedCompletionRate} size={64} strokeWidth={5} />
           <div className="flex-1 text-center sm:text-left">
             <p className="font-mono text-[11px] text-violet-300 tracking-widest uppercase mb-1">{greeting}, {user?.name?.split(' ')[0]} ✦</p>
             <h1 className="milestone-number text-2xl sm:text-3xl text-white mb-2">{motivationalLine(pct)}</h1>
@@ -75,6 +81,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard icon={CheckSquare} label="Total Tasks" value={stats?.totalTasks??0} delay={0}/>
           <StatCard icon={TrendingUp} label="Completed" value={stats?.completedTasks??0} sub={`${pct}% rate`} glow delay={60}/>
@@ -82,7 +89,9 @@ export default function DashboardPage() {
           <StatCard icon={FileText} label="Notes" value={stats?.totalNotes??0} delay={180}/>
         </div>
 
+        {/* Main Content Layout Block */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Up Next List */}
           <div className="col-span-1 lg:col-span-2 dark-card p-6 card-rise" style={{animationDelay:'240ms'}}>
             <div className="flex items-center justify-between mb-5">
               <div>
@@ -116,6 +125,7 @@ export default function DashboardPage() {
             )}
           </div>
 
+          {/* Breakdown Widget */}
           <div className="dark-card p-6 card-rise" style={{animationDelay:'300ms'}}>
             <div className="flex items-center gap-2 mb-1">
               <Flame size={14} className="text-amber-400"/>
@@ -140,6 +150,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Quick Actions Footer Module */}
         <div className="dark-card p-6 card-rise" style={{animationDelay:'360ms'}}>
           <h2 className="font-bungee text-base text-white mb-1">Quick Actions</h2>
           <p className="font-mono text-[10px] text-white/30 mb-5 tracking-wider">FAST ACCESS</p>
