@@ -21,7 +21,7 @@ const MomentumRing: React.FC<MomentumRingProps> = ({
       <svg width={size} height={size} className="transform -rotate-90">
         {/* Background circle */}
         <circle
-          className="text-slate-800"
+          className="text-zinc-200"
           strokeWidth={strokeWidth}
           stroke="currentColor"
           fill="transparent"
@@ -43,7 +43,7 @@ const MomentumRing: React.FC<MomentumRingProps> = ({
           cy={size / 2}
         />
       </svg>
-      <span className={`absolute text-[10px] font-bold tracking-tighter ${isHigh ? 'text-amber-400' : 'text-indigo-400'}`}>
+      <span className={`absolute text-[10px] font-bold tracking-tighter ${isHigh ? 'text-amber-500' : 'text-indigo-600'}`}>
         {Math.round(percentage)}%
       </span>
     </div>

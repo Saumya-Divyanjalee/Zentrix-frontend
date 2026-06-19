@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Sparkles, FileText, HelpCircle, Calendar, Copy, Check, Wand2 } from 'lucide-react';
+import { Sparkles, FileText, HelpCircle, Calendar, Copy, Check, Wand2, Zap } from 'lucide-react';
 import api from '../../api/axiosInstance';
 
 type Tab = 'summarize'|'quiz'|'plan';
 const tabs = [
-  {key:'summarize' as Tab,icon:FileText,label:'Summarizer',desc:'Turn notes into bullet points'},
-  {key:'quiz' as Tab,icon:HelpCircle,label:'Quiz Generator',desc:'Generate MCQs from content'},
-  {key:'plan' as Tab,icon:Calendar,label:'Study Planner',desc:'Create personalized study plans'},
+  {key:'summarize' as Tab,icon:FileText,label:'Summarizer',desc:'Turn notes into bullet points',emoji:'📝'},
+  {key:'quiz' as Tab,icon:HelpCircle,label:'Quiz Generator',desc:'Generate MCQs from content',emoji:'🧠'},
+  {key:'plan' as Tab,icon:Calendar,label:'Study Planner',desc:'Create personalized study plans',emoji:'🗓️'},
 ];
 
 export default function AIAssistantPage() {
@@ -39,141 +39,89 @@ export default function AIAssistantPage() {
   };
 
   return (
-    <div className="ai-room -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 min-h-screen relative overflow-hidden">
-      {/* Background Ambient Elements */}
-      <div className="absolute top-10 right-1/4 w-2.5 h-2.5 rounded-full bg-indigo-400 spark-dot"/>
-      <div className="absolute top-1/3 left-10 w-2 h-2 rounded-full bg-amber-400 spark-dot" style={{animationDelay:'0.7s'}}/>
-      <div className="absolute bottom-1/4 right-10 w-2 h-2 rounded-full bg-indigo-400 spark-dot" style={{animationDelay:'1.3s'}}/>
-      <div className="absolute top-0 left-1/3 w-[500px] h-[500px] rounded-full opacity-25 blur-3xl ambient-blob" style={{background:'#6366f1'}}/>
-
-      <div className="relative z-10 space-y-7 w-full mx-auto">
-        {/* Header - Left Aligned and Solid Contrast */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-400/10 border border-amber-400/30 shadow-lg shadow-amber-400/5">
-              <Sparkles size={13} className="text-amber-400 animate-pulse"/>
-              <span className="font-mono text-xs font-bold text-amber-300 tracking-wider">POWERED BY GOOGLE GEMINI AI</span>
-            </div>
-            <h1 className="font-bungee text-2xl sm:text-3xl text-white tracking-wide mt-2">AI STUDY COMMAND ROOM</h1>
-            <p className="font-mono text-sm text-slate-300">Your professional execution space to analyze, summarize, quiz, and structure plans.</p>
+    <div className="space-y-6 animate-slide-up relative">
+      <div className="relative overflow-hidden rounded-3xl p-7 sm:p-9" style={{background:'linear-gradient(120deg,#6366f1 0%,#8b5cf6 45%,#ec4899 100%)'}}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-20 blur-3xl ambient-blob" style={{background:'#fff'}}/>
+        <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full opacity-15 blur-3xl ambient-blob" style={{background:'#fbbf24', animationDelay:'3s'}}/>
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur border border-white/20 mb-4">
+            <Zap size={12} className="text-amber-300 spark-dot" fill="currentColor"/>
+            <span className="font-mono text-[10px] font-bold text-white tracking-wider">POWERED BY GOOGLE GEMINI ✨</span>
           </div>
+          <h1 className="font-bungee text-3xl sm:text-4xl text-white mb-2">AI Study Room 🤖</h1>
+          <p className="font-mono text-sm text-white/80">Your personal AI sidekick — summarize, quiz yourself, and plan smarter.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {tabs.map(t=>(
+          <button key={t.key} onClick={()=>{setTab(t.key);setResult('');setError('');setInput('');}}
+            className={`p-5 rounded-2xl text-left transition-all duration-200 border-2 ${
+              tab===t.key ? 'border-transparent shadow-lg' : 'border-zinc-100 bg-white hover:border-violet-200'
+            }`}
+            style={tab===t.key ? {background:'linear-gradient(135deg,#eef2ff,#fdf4ff)', boxShadow:'0 8px 30px rgba(139,92,246,0.18)'} : undefined}>
+            <div className="flex items-center gap-2 mb-3">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${tab===t.key?'momentum-glow':''}`}
+                style={{background: tab===t.key ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#f4f4f5'}}>
+                {tab===t.key ? <span>{t.emoji}</span> : <t.icon size={16} className="text-zinc-400" strokeWidth={2}/>}
+              </div>
+            </div>
+            <p className="font-bungee text-sm text-zinc-900">{t.label}</p>
+            <p className="font-mono text-[10px] text-zinc-500 mt-0.5">{t.desc}</p>
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="luxury-card p-6 border-2 border-violet-100">
+          <label className="luxury-label flex items-center gap-1.5">✍️ Input Content</label>
+          <textarea value={input} onChange={e=>setInput(e.target.value)} placeholder={placeholders[tab]} rows={11} className="luxury-input resize-none mt-1 text-xs leading-relaxed"/>
+          {tab==='plan'&&(
+            <div className="mt-4">
+              <label className="luxury-label">Study Duration</label>
+              <div className="flex gap-2 mt-1">
+                {['3','5','7','14','30'].map(d=>(
+                  <button key={d} onClick={()=>setDays(d)}
+                    className={`flex-1 py-2 rounded-lg font-mono text-xs font-bold transition-all border ${
+                      days===d ? 'text-white border-transparent shadow-md' : 'bg-white text-zinc-500 border-zinc-200 hover:border-primary-200'
+                    }`}
+                    style={days===d ? {background:'linear-gradient(135deg,#6366f1,#8b5cf6)'} : undefined}>{d}d</button>
+                ))}
+              </div>
+            </div>
+          )}
+          {error&&<p className="font-mono text-xs text-red-500 mt-3">⚠️ {error}</p>}
+          <button onClick={run} disabled={loading||!input.trim()}
+            className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 rounded-xl font-mono text-sm font-bold text-white transition-all disabled:opacity-40"
+            style={{background:'linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899)', boxShadow: loading||!input.trim() ? 'none' : '0 8px 24px rgba(139,92,246,0.35)'}}>
+            {loading?(<><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>Generating magic...</>):(<><Wand2 size={15}/>Generate ✨</>)}
+          </button>
         </div>
 
-        {/* Action Tabs Grid - Made Larger with High Visual Contrast */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {tabs.map(t=>(
-            <button 
-              key={t.key} 
-              onClick={()=>{setTab(t.key);setResult('');setError('');setInput('');}}
-              className={`p-5 rounded-xl text-left transition-all duration-200 border-2 ${
-                tab===t.key 
-                  ? 'border-indigo-500 bg-indigo-600/15 shadow-xl shadow-indigo-600/10' 
-                  : 'border-white/5 bg-white/[0.02] hover:border-white/20'
-              }`}
-            >
-              <div 
-                className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform ${tab===t.key?'scale-105 shadow-md shadow-indigo-500/20':''}`}
-                style={{background: tab===t.key ? '#4f46e5' : 'rgba(255,255,255,0.06)'}}
-              >
-                <t.icon size={18} className="text-white" strokeWidth={2.5}/>
-              </div>
-              <p className="font-bungee text-sm text-white tracking-wide">{t.label}</p>
-              <p className="font-mono text-xs text-slate-300 mt-1 leading-relaxed font-bold">{t.desc}</p>
-            </button>
-          ))}
-        </div>
-
-        {/* Twin Panel Split Terminal - Expanded Width & Visibility */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Input Terminal Panel */}
-          <div className="dark-card p-6 flex flex-col justify-between">
-            <div>
-              <label className="font-mono text-xs font-black text-indigo-300 uppercase tracking-widest mb-2.5 block">INPUT CONTENT TERMINAL</label>
-              <textarea 
-                value={input} 
-                onChange={e=>setInput(e.target.value)} 
-                placeholder={placeholders[tab]} 
-                rows={12}
-                className="w-full bg-slate-950/60 border-2 border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3.5 font-mono text-sm text-slate-100 leading-relaxed resize-none outline-none transition-all placeholder:text-slate-500"
-              />
-              
-              {tab=='plan'&&(
-                <div className="mt-5 space-y-2">
-                  <label className="font-mono text-xs font-black text-indigo-300 uppercase tracking-widest block">Study Plan Duration Anchor</label>
-                  <div className="grid grid-cols-5 gap-2">
-                    {['3','5','7','14','30'].map(d=>(
-                      <button 
-                        key={d} 
-                        onClick={()=>setDays(d)}
-                        className={`py-2.5 rounded-xl font-mono text-xs font-black transition-all border-2 ${
-                          days===d 
-                            ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-600/10' 
-                            : 'text-slate-400 border-slate-800 bg-transparent hover:border-slate-700'
-                        }`}
-                      >
-                        {d} Days
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {error&&<p className="font-mono text-xs font-bold text-rose-400 mt-3 border border-rose-500/20 bg-rose-500/10 p-2.5 rounded-lg">{error}</p>}
-            
-            <button 
-              onClick={run} 
-              disabled={loading||!input.trim()} 
-              className="w-full mt-5 bg-indigo-600 hover:bg-indigo-500 font-mono font-black text-sm text-white py-3.5 px-4 rounded-xl uppercase tracking-wider transition-all shadow-xl shadow-indigo-600/20 flex items-center justify-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
-            >
-              {loading?(
-                <>
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>
-                  Processing Analytics...
-                </>
-              ):(
-                <>
-                  <Wand2 size={16} strokeWidth={2.5}/>
-                  Execute Core AI Operation
-                </>
-              )}
-            </button>
+        <div className="luxury-card p-6 border-2 border-violet-100">
+          <div className="flex items-center justify-between mb-4">
+            <label className="luxury-label flex items-center gap-1.5">🎯 AI Result</label>
+            {result&&(<button onClick={copy} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 transition-colors">
+              {copied?<Check size={12} className="text-emerald-500"/>:<Copy size={12} className="text-zinc-400"/>}
+              <span className="font-mono text-[10px] text-zinc-500">{copied?'Copied!':'Copy'}</span>
+            </button>)}
           </div>
-
-          {/* AI Output Terminal Panel */}
-          <div className="dark-card p-6 flex flex-col">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-              <label className="font-mono text-xs font-black text-indigo-300 uppercase tracking-widest">AI GENERATED ENGINE OUTPUT</label>
-              {result&&((
-                <button 
-                  onClick={copy} 
-                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-700 hover:border-slate-500 bg-slate-900/60 transition-colors shadow-md"
-                >
-                  {copied?<Check size={13} className="text-emerald-400"/>:<Copy size={13} className="text-slate-400"/>}
-                  <span className="font-mono text-xs font-bold text-slate-300">{copied?'Copied!':'Copy Index'}</span>
-                </button>
-              ))}
+          {loading?(
+            <div className="flex flex-col items-center justify-center h-72 gap-4">
+              <div className="relative w-20 h-20">
+                <div className="w-20 h-20 rounded-full absolute animate-spin" style={{background:'conic-gradient(from 0deg,#6366f1,#8b5cf6,#ec4899,#6366f1)', mask:'radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 4px))', WebkitMask:'radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 4px))'}}/>
+                <div className="w-20 h-20 flex items-center justify-center text-2xl">🤖</div>
+              </div>
+              <p className="font-bungee text-sm" style={{background:'linear-gradient(135deg,#6366f1,#ec4899)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent'}}>Thinking...</p>
             </div>
-
-            {loading?(
-              <div className="flex flex-col items-center justify-center flex-1 py-24 gap-4">
-                <div className="relative w-16 h-16 flex items-center justify-center">
-                  <div className="w-16 h-16 border-4 border-indigo-500/10 border-t-indigo-400 rounded-full animate-spin absolute"/>
-                  <Sparkles size={24} className="text-indigo-400 animate-pulse"/>
-                </div>
-                <p className="font-mono text-xs font-black text-indigo-300 uppercase tracking-widest animate-pulse">Running Neural Analytics...</p>
-              </div>
-            ):result?(
-              <div className="flex-1 overflow-y-auto pr-1 bg-slate-950/40 border border-slate-800/60 rounded-xl p-4 min-h-[18rem] max-h-[28rem]">
-                <p className="font-mono text-sm text-slate-100 leading-relaxed whitespace-pre-wrap font-medium">{result}</p>
-              </div>
-            ):(
-              <div className="flex flex-col items-center justify-center flex-1 py-24 border-2 border-dashed border-slate-800 rounded-xl bg-slate-950/20">
-                <Sparkles size={36} className="text-slate-700 mb-3 empty-state-icon"/>
-                <p className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider">Awaiting Execution Command</p>
-              </div>
-            )}
-          </div>
+          ):result?(
+            <div className="h-80 overflow-y-auto"><p className="font-mono text-xs text-zinc-700 leading-relaxed whitespace-pre-wrap">{result}</p></div>
+          ):(
+            <div className="flex flex-col items-center justify-center h-72 border-2 border-dashed border-violet-100 rounded-xl" style={{background:'linear-gradient(160deg,#fafaff,#fff)'}}>
+              <span className="text-4xl mb-2 empty-state-icon">✨</span>
+              <p className="font-mono text-xs text-zinc-400">Your AI result will appear here</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

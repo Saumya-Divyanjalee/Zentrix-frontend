@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { History, FileText, HelpCircle, Calendar, Sparkles, Cpu } from 'lucide-react';
+import { History, FileText, HelpCircle, Calendar, Sparkles } from 'lucide-react';
 import api from '../api/axiosInstance';
 
 interface HistoryItem {
@@ -10,7 +10,11 @@ interface HistoryItem {
   createdAt: string;
 }
 
-const typeIcons = { summarize: FileText, quiz: HelpCircle, plan: Calendar };
+const typeConfig = {
+  summarize: { icon: FileText, emoji: '📝', bg: 'bg-primary-50', color: 'text-primary-600', border: 'border-primary-100' },
+  quiz:      { icon: HelpCircle, emoji: '🧠', bg: 'bg-amber-50', color: 'text-amber-600', border: 'border-amber-100' },
+  plan:      { icon: Calendar, emoji: '🗓️', bg: 'bg-pink-50', color: 'text-pink-600', border: 'border-pink-100' },
+};
 
 export default function AIHistoryPage() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -23,75 +27,60 @@ export default function AIHistoryPage() {
   }, []);
 
   if (loading) return (
-    <div className="dark-surface w-full min-h-screen p-6 sm:p-8 flex flex-col justify-start">
-      <div className="flex items-center gap-2 font-mono text-sm font-black text-indigo-300 uppercase tracking-widest animate-pulse">
-        <Cpu size={16} className="animate-spin" /> Fetching AI History Index...
-      </div>
-      <div className="loading-bar w-full mt-4 mb-8"/>
+    <div className="space-y-6">
+      <div className="loading-bar w-full mb-8"/>
       <div className="space-y-4">
-        {[...Array(3)].map((_,i) => <div key={i} className="dark-card h-36 animate-pulse" />)}
+        {[...Array(3)].map((_,i) => <div key={i} className="luxury-card h-36 animate-pulse bg-zinc-50" />)}
       </div>
     </div>
   );
 
   return (
-    <div className="dark-surface w-full min-h-screen p-2 sm:p-4 space-y-7 relative overflow-hidden card-rise">
-      {/* Background Ambient Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl ambient-blob" style={{background:'#6366f1'}}/>
-
-      {/* AI History Top Navigation Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
-        <div className="space-y-1">
-          <h1 className="font-bungee text-2xl sm:text-3xl text-white tracking-wide">NEURAL GENERATION HISTORY</h1>
-          <p className="font-mono text-sm text-slate-300">Logged archive repository containing {history.length} past analytical executions.</p>
+    <div className="space-y-6 animate-slide-up">
+      <div>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-50 border border-primary-100 mb-3">
+          <Sparkles size={11} className="text-primary-500"/>
+          <span className="font-mono text-[10px] font-bold text-primary-700 tracking-wider">AI ARCHIVE</span>
         </div>
+        <h1 className="font-bungee text-3xl text-zinc-900">AI History 🗂️</h1>
+        <p className="font-mono text-xs text-zinc-400 mt-1">{history.length} past generations — your AI journey so far</p>
       </div>
 
-      {/* History Log Stream Container */}
       {history.length === 0 ? (
-        <div className="dark-card p-16 text-center border-2 border-dashed border-slate-800 bg-slate-950/20">
-          <History size={38} className="mx-auto mb-3 text-slate-700 empty-state-icon" />
-          <h3 className="font-mono text-base font-black text-slate-400 uppercase tracking-wider mb-1">Zero History Nodes</h3>
-          <p className="font-mono text-xs text-slate-500 font-bold">No previous data generations committed to this tracking loop yet.</p>
+        <div className="luxury-card p-16 text-center">
+          <History size={36} className="mx-auto mb-3 text-zinc-200 empty-state-icon" />
+          <h3 className="font-bungee text-zinc-300 mb-1">No History Yet</h3>
+          <p className="font-mono text-xs text-zinc-300">Every summary, quiz, and plan you generate will show up here</p>
         </div>
       ) : (
         <div className="space-y-4">
           {history.map((h, i) => {
-            const Icon = typeIcons[h.type];
+            const cfg = typeConfig[h.type];
+            const Icon = cfg.icon;
             return (
-              <div 
-                key={h._id} 
-                className="dark-card p-5 sm:p-6 bg-white/[0.01] border border-white/5 hover:border-indigo-500/30 transition-all"
-                style={{ animationDelay: `${i * 40}ms` }}
-              >
-                {/* Meta Header Information Row */}
-                <div className="flex items-center gap-2.5 border-b border-slate-900 pb-3 mb-4">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center border ${
-                    h.type === 'summarize' ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' :
-                    h.type === 'quiz' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
-                    'bg-pink-500/10 border-pink-500/20 text-pink-400'
-                  }`}>
-                    <Icon size={13} strokeWidth={2.5} />
+              <div key={h._id}
+                className="luxury-card p-5 sm:p-6 card-rise"
+                style={{ animationDelay: `${i * 50}ms` }}>
+                <div className="flex items-center gap-2.5 border-b border-zinc-100 pb-3 mb-4">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${cfg.bg} border ${cfg.border}`}>
+                    <span>{cfg.emoji}</span>
                   </div>
-                  <span className="font-mono text-xs font-black tracking-widest uppercase text-slate-200">{h.type} engine</span>
-                  
-                  <span className="font-mono text-[11px] font-black tracking-wider text-slate-500 bg-slate-950 border border-slate-900 px-2.5 py-0.5 rounded-lg ml-auto">
+                  <span className={`font-mono text-xs font-bold uppercase tracking-wider ${cfg.color}`}>{h.type}</span>
+                  <span className="font-mono text-[11px] text-zinc-400 bg-zinc-50 border border-zinc-100 px-2.5 py-0.5 rounded-lg ml-auto">
                     {new Date(h.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
-                
-                {/* User Raw Input Stream Section */}
-                <div className="space-y-1 mb-3.5 pl-1">
-                  <span className="font-mono text-[10px] font-black text-indigo-400 uppercase tracking-widest block">COMMITTED RAW INPUT</span>
-                  <p className="font-mono text-xs font-semibold text-slate-400 line-clamp-2 leading-relaxed">{h.input}</p>
+
+                <div className="mb-3.5">
+                  <span className="font-mono text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-1">Your Input</span>
+                  <p className="font-mono text-xs text-zinc-500 line-clamp-2 leading-relaxed">{h.input}</p>
                 </div>
-                
-                {/* AI Structured Output Stream Section */}
-                <div className="bg-slate-950/60 border border-slate-900 rounded-xl p-4 relative overflow-hidden">
-                  <div className="flex items-center gap-1.5 font-mono text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">
-                    <Sparkles size={11} fill="currentColor" /> Neural Output Stack
+
+                <div className="rounded-xl p-4" style={{background:'linear-gradient(160deg,#fafaff,#fff)', border:'1px solid #ede9fe'}}>
+                  <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold text-violet-600 uppercase tracking-widest mb-2">
+                    <Sparkles size={11}/> AI Result
                   </div>
-                  <p className="font-mono text-sm font-medium text-slate-200 whitespace-pre-wrap line-clamp-4 leading-relaxed">{h.output}</p>
+                  <p className="font-mono text-xs text-zinc-700 whitespace-pre-wrap line-clamp-4 leading-relaxed">{h.output}</p>
                 </div>
               </div>
             );
