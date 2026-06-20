@@ -48,7 +48,7 @@ Zentrix is a full-stack productivity platform built for students who want to man
 
 ## Screenshots
 
-> Screenshots live in the `screenshots/` folder at the root of this repository. Take a screenshot of each page below at `https://zentrix-frontend-weld.vercel.app/`, save it with the exact filename shown, and it will appear automatically — no further edits needed.
+ 
 
 ### Landing Page
 <img width="1918" height="902" alt="Screenshot 2026-06-20 134539" src="https://github.com/user-attachments/assets/8af35029-4546-433e-8d5d-c03ea376206f" />
